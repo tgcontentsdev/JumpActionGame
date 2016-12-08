@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class GameScreen extends ScreenAdapter {
     static final int GAME_STATE_READY = 0;
     static final int GAME_STATE_PLAYING = 1;
     static final int GAME_STATE_GAMEOVER = 2;
+    static final int GAME_STATE_CLEARED = 3;
 
     static final float GRAVITY = -12;
 
@@ -50,6 +52,10 @@ public class GameScreen extends ScreenAdapter {
     ArrayList<Enemy> mEnemies;
     Ufo mUfo;
     Player mPlayer;
+
+    Sound sound_hit = Gdx.audio.newSound(Gdx.files.internal("hit.mp3"));
+    Sound sound_cleared = Gdx.audio.newSound(Gdx.files.internal("cleared.mp3"));
+    Sound sound_gameover = Gdx.audio.newSound(Gdx.files.internal("gameover.mp3"));
 
     float vanishLevel = 0.5f;
     float mHeightSoFar;
@@ -133,6 +139,13 @@ public class GameScreen extends ScreenAdapter {
         mFont.draw(mGame.batch, "HighScore:" + mHighScore, 16, GUI_HEIGHT - 15);
         mFont.draw(mGame.batch, "Score:" + mScore, 16, GUI_HEIGHT - 35);
 
+        if (mGameState == GAME_STATE_GAMEOVER){
+            mFont.draw(mGame.batch, "GameOver",  0, GUI_HEIGHT / 2 - 40, GUI_WIDTH, Align.center, false);
+        }
+        if (mGameState == GAME_STATE_CLEARED){
+            mFont.draw(mGame.batch, "GameCleared!!",  0, GUI_HEIGHT / 2 - 40, GUI_WIDTH, Align.center, false);
+        }
+
         mGame.batch.end();
     }
 
@@ -172,7 +185,7 @@ public class GameScreen extends ScreenAdapter {
 
             //敵
             if (mRandom.nextFloat() > 0.4) {
-                Enemy enemy = new Enemy(eType, enemyTexture, 0, 0, 80, 70);
+                Enemy enemy = new Enemy(eType, enemyTexture, 0, 0, 81, 67);
                 enemy.setPosition(eX, y + mRandom.nextFloat() * 50);
                 mEnemies.add(enemy);
             }
@@ -198,8 +211,10 @@ public class GameScreen extends ScreenAdapter {
                 updatePlaying(delta);
                 break;
             case GAME_STATE_GAMEOVER:
+            case GAME_STATE_CLEARED:
                 updateGameOver();
                 break;
+
         }
     }
 
@@ -248,9 +263,8 @@ public class GameScreen extends ScreenAdapter {
 
     private void checkCollision(){
         if (mPlayer.getBoundingRectangle().overlaps(mUfo.getBoundingRectangle())){
-            Sound sound = Gdx.audio.newSound(Gdx.files.internal("cleared.mp3"));
-            sound.play(1.0f);
-            mGameState = GAME_STATE_GAMEOVER;
+            sound_cleared.play(1.0f);
+            mGameState = GAME_STATE_CLEARED;
             return;
         }
 
@@ -275,8 +289,7 @@ public class GameScreen extends ScreenAdapter {
         for (int i = 0; i < mEnemies.size(); i++){
             Enemy enemy = mEnemies.get(i);
             if (mPlayer.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())){
-                Sound sound = Gdx.audio.newSound(Gdx.files.internal("hit.mp3"));
-                sound.play(1.0f);
+                sound_hit.play(1.0f);
 
                 mGameState = GAME_STATE_GAMEOVER;
                 break;
@@ -308,8 +321,7 @@ public class GameScreen extends ScreenAdapter {
 
     private void checkGameOver(){
         if (mHeightSoFar - CAMERA_HEIGHT / 2 > mPlayer.getY()){
-            Sound sound = Gdx.audio.newSound(Gdx.files.internal("gameover.mp3"));
-            sound.play(1.0f);
+            sound_gameover.play(1.0f);
             mGameState = GAME_STATE_GAMEOVER;
         }
     }
