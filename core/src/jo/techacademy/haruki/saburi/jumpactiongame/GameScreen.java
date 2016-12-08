@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -47,8 +47,8 @@ public class GameScreen extends ScreenAdapter {
     FitViewport mGuiViewPort;
 
     Random mRandom;
-    ArrayList<Step> mSteps;
-    ArrayList<Star> mStars;
+    List<Step> mSteps;
+    List<Star> mStars;
     ArrayList<Enemy> mEnemies;
     Ufo mUfo;
     Player mPlayer;
