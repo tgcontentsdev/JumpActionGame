@@ -13,13 +13,9 @@ public class Enemy extends GameObject{
     public static final int ENEMY_TYPE_STATIC = 0;
     public static final int ENEMY_TYPE_MOVING = 1;
 
-    public static final int ENEMY_STATE_NORMAL = 0;
-    public static final int ENEMY_STATE_VANISH = 1;
-
     public static final float ENEMY_VELOCITY = 2.5f;
 
     int mType;
-    int mState;
 
     public Enemy(int type, Texture texture, int srcX, int srcY, int srcWidth, int srcHeight){
         super(texture, srcX, srcY, srcWidth, srcHeight);
@@ -45,12 +41,5 @@ public class Enemy extends GameObject{
 
         }
     }
-
-    public void vanish(){
-        mState = ENEMY_STATE_VANISH;
-        setAlpha(0);
-        velocity.x = 0;
-    }
-
 
 }
