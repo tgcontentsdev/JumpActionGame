@@ -29,6 +29,9 @@ public class ResultScreen extends ScreenAdapter {
 
     public ResultScreen(JumpActionGame game, int score){
         mGame = game;
+        if (mGame.mRequestHandler != null) {
+            mGame.mRequestHandler.showAds(true);
+        }
         mScore = score;
 
         Texture bgTexture = new Texture("resultback.png");
